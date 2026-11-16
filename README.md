@@ -6,17 +6,16 @@ An end-to-end quantitative fixed-income risk analytics pipeline and interactive 
 ## Architecture & Pipeline
 
 1. **Data Engineering & Storage (`SQL`)**
-   - Designed a relational schema (`sql/`) to store bond static characteristics, coupon schedules, credit ratings, maturity dates, and market yield curves.
-2. **Quantitative Risk Engine (`Python`)**
+   - PostgreSQL table (`sql/schema.sql`) storing bond static characteristics: issuer, face value, coupon rate,maturity, YTM, payment frequency.
+3. **Quantitative Risk Engine (`Python`)**
    - Engineered a calculation script (`src/`) to compute core fixed-income risk metrics from raw bond positions:
-     - **Clean & Dirty Pricing**
-     - **Yield to Maturity (YTM)**
-     - **Macaulay Duration & Modified Duration**
-     - **Convexity**
-     - **DV01 (Dollar Value of an 01 / Basis Point Value)**
-     - **Parallel Yield Shift Stress Testing** (e.g., ±50 bps, ±100 bps, ±200 bps)
+   - **Bond Pricing** (DCF of coupon + principal; no accrued-interest, so clean = dirty)
+   - **Yield to Maturity (YTM)** - market input per position
+   - **Macaulay Duration, Modified Duration & Convexity**
+   - **DV01 (Dollar Value of an 01)** per position
+   - **Parallel Yield Shift Stress Testing** (±100 bps, ±200 bps) via duration + convexity approximation
    - Exported enriched position-level risk data to `financial_calculated_results.csv`.
-3. **Executive Risk Visualization (`Power BI`)**
+4. **Executive Risk Visualization (`Power BI`)**
    - Connected the calculated dataset to `Bond_Portfolio_Stress_Testing.pbix` to build interactive views tracking portfolio market value, DV01 concentration by sector/rating, duration buckets, and P&L impact under interest rate shocks.
 
 
